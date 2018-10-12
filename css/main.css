@@ -1,0 +1,21 @@
+*, *:after, *:before {
+    box-sizing: border-box;
+}
+.board {
+    width: 450px;
+    height: 450px;
+}
+
+.board-cell {
+    width: 150px;
+    height: 150px;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 5rem;
+}
+
+#restart {
+    margin-top: 1rem;
+}

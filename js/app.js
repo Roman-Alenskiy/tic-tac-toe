@@ -1,10 +1,17 @@
 // Player factory
 const Player = function(name, symbol) {
+    let score = 0
     const getName = () => name
     const getSymbol = () => symbol
+    const getScore = () => score
+    const increaseScore = () => {++score}
+    const resetScore = () => {score = 0}
     return {
         getName,
-        getSymbol
+        getSymbol,
+        getScore,
+        increaseScore,
+        resetScore
     }
 }
 const player1 = Player('Player1 (X)', 'X')
@@ -33,28 +40,46 @@ const displayController = (function() {
             currentCell.innerHTML = value
         })
     }
-    const inputHandler = function(cell) {
-        if (cell.target.innerHTML !== '') return
-        if (!gameController.gameIsOn()) return
-        gameBoard.addSymbol(cell.target.getAttribute('data-cellindex'))
-        drawBoard()
-        gameController.winCheck()
-        gameController.changeActivePlayer()
+    const displayScore = function() {
+        if (gameController.getActivePlayer().getName() === player1.getName()) {
+            document.querySelector('#player1-score').innerHTML = gameController.getActivePlayer().getScore()
+        } else {
+            document.querySelector('#player2-score').innerHTML = gameController.getActivePlayer().getScore()
+        }
+    }
+    const resetScore = function() {
+        document.querySelector('#player1-score').innerHTML = document.querySelector('#player2-score').innerHTML = '0'
     }
     return {
         drawBoard,
-        inputHandler
+        displayScore,
+        resetScore,
     }
 })()
 
 // Game controller module
 const gameController = (function() {
     let activePlayer = player1
-    let gameOn = true
+    let stepCounter = 0
+    const inputHandler = function(cell) {
+        if (cell.target.innerHTML !== '') return
+        gameBoard.addSymbol(cell.target.getAttribute('data-cellindex'))
+        displayController.drawBoard()
+        if (isWin()) {
+            activePlayer.increaseScore()
+            displayController.displayScore()
+            alert(activePlayer.getName() + ' win!')
+            newRound()
+            return
+        }
+        if (isDraw()) {
+            alert('Draw!')
+            newRound()
+            return
+        }
+        changeActivePlayer()
+    }
     const getActivePlayer = () => activePlayer
-    const gameIsOn = () => gameOn
-    const gameStop = () => {gameOn = false}
-    const gameStart = () => {gameOn = true}
     const changeActivePlayer = function() {
         if (activePlayer === player1) {
             activePlayer = player2
@@ -62,7 +87,13 @@ const gameController = (function() {
             activePlayer = player1
         }
     }
-    const winCheck = function() {
+    const newRound = function() {
+        stepCounter = 0
+        gameBoard.clear()
+        displayController.drawBoard()
+        activePlayer = player1
+    }
+    const isWin = function() {
         const winConditions = [
             [0, 1, 2],
             [3, 4, 5],
@@ -73,26 +104,33 @@ const gameController = (function() {
             [0, 4, 8],
             [2, 4, 6]
         ]
+        let win = false
         winConditions.forEach(function(condition) {
             if (gameBoard.get()[condition[0]] === activePlayer.getSymbol() && 
                 gameBoard.get()[condition[1]] === activePlayer.getSymbol() && 
                 gameBoard.get()[condition[2]] === activePlayer.getSymbol()
             ) {
-                gameStop()
-                alert(activePlayer.getName() + ' win!')
+                win = true
             }
         })
+        return win
+    }
+    const isDraw = function() {
+        ++stepCounter
+        if (stepCounter === 9) {
+            return true
+        }
+        return false
     }
     const restart = function() {
-        gameBoard.clear()
-        displayController.drawBoard()
-        gameStart()
+        newRound()
+        displayController.resetScore()
+        player1.resetScore()
+        player2.resetScore()
     }
     return {
+        inputHandler,
         getActivePlayer,
-        changeActivePlayer,
-        winCheck,
-        gameIsOn,
         restart
     }
 })()
@@ -100,7 +138,7 @@ const gameController = (function() {
 // Event listeners
 const cells = document.querySelectorAll('.board-cell')
 cells.forEach(function(cell) {
-    cell.addEventListener('mousedown', displayController.inputHandler)
+    cell.addEventListener('mousedown', gameController.inputHandler)
 })
 
 const restartButton = document.querySelector('#restart')

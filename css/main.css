@@ -19,3 +19,8 @@
 #restart {
     margin-top: 1rem;
 }
+
+.score-table {
+    margin: 1rem 0 0;
+    width: 20rem;
+}

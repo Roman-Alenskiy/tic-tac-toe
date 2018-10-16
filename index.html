@@ -8,11 +8,15 @@
     <link rel="stylesheet" href="css/main.css">
     <title>Tic Tac Toe</title>
 </head>
-<body class="flex-container flex-dir-column align-center-middle">
+<body class="grid-y align-middle align-spaced">
+    
     <select name="game-mode" id="game-mode">
         <option value="PvAI">Player vs. AI</option>
         <option value="PvP">Player vs. Player</option>
     </select>
+
+    <button class="button" id="restart" type="button">Restart</button>
+
     <div class="board grid-x">
         <div class="board-cell cell" data-cellindex="0"></div>
         <div class="board-cell cell" data-cellindex="1"></div>
@@ -24,6 +28,7 @@
         <div class="board-cell cell" data-cellindex="7"></div>
         <div class="board-cell cell" data-cellindex="8"></div>
     </div>
+
     <table class="score-table">
         <thead>
             <tr>
@@ -38,7 +43,6 @@
             </tr>
         </tbody>
     </table>
-    <button class="button" id="restart" type="button">Restart</button>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.5.0-rc.3/dist/js/foundation.min.js" integrity="sha256-l1HhyJ0nfWQPdwsVJLNq8HfZNb3i1R9M82YrqVPzoJ4= sha384-NH8utV74bU+noXiJDlEMZuBe34Bw/X66sw22frHkgIs8R1QKWc8ckxYB4DheLjH4 sha512-JMs3Y+JjY+DhwVOPeJhkLM/0FeK9ANxvuYiHGpGp7Q2kMlmNEN/2v6TkrXdirxqB3DHxPlQ8iMxvb/eSPCF5CA==" crossorigin="anonymous"></script>

@@ -24,3 +24,12 @@
     margin: 1rem 0 0;
     width: 20rem;
 }
+
+.score-table td, .score-table th {
+    text-align: center;
+}
+
+#game-mode {
+    width: 20rem;
+    margin-top: 1rem;
+}

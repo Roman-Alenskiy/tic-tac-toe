@@ -8,7 +8,11 @@
     <link rel="stylesheet" href="css/main.css">
     <title>Tic Tac Toe</title>
 </head>
-<body>
+<body class="flex-container flex-dir-column align-center-middle">
+    <select name="game-mode" id="game-mode">
+        <option value="PvAI">Player vs. AI</option>
+        <option value="PvP">Player vs. Player</option>
+    </select>
     <div class="board grid-x">
         <div class="board-cell cell" data-cellindex="0"></div>
         <div class="board-cell cell" data-cellindex="1"></div>
@@ -23,8 +27,8 @@
     <table class="score-table">
         <thead>
             <tr>
-                <th>Player1 (X)</th>
-                <th>Player2 (O)</th>
+                <th id="player1-header">Player1 (X)</th>
+                <th id="player2-header">PlayerAI (O)</th>
             </tr>   
         </thead>
         <tbody>

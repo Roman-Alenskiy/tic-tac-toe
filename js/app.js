@@ -1,12 +1,14 @@
 // Player factory
 const Player = function(name, symbol) {
     let score = 0
+    const isAI = () => false
     const getName = () => name
     const getSymbol = () => symbol
     const getScore = () => score
     const increaseScore = () => {++score}
     const resetScore = () => {score = 0}
     return {
+        isAI,
         getName,
         getSymbol,
         getScore,
@@ -14,8 +16,33 @@ const Player = function(name, symbol) {
         resetScore
     }
 }
-const player1 = Player('Player1 (X)', 'X')
-const player2 = Player('Player2 (O)', 'O')
+
+// AI factory
+const AI = function(name, symbol) {
+    const isAI = () => true
+    const move = function() {
+       setTimeout(() => {
+            let emptyCells = []
+            gameBoard.get().forEach(function(cell, index) {
+                if (cell === '') {emptyCells.push(index)}
+            })
+            gameBoard.addSymbol(emptyCells[Math.floor(Math.random() * emptyCells.length)])
+            gameController.inputHandler()
+       }, 300) 
+    }
+    return Object.assign(
+        {},
+        Player(name, symbol),
+        {
+            isAI,
+            move
+        }
+    )
+}
+
+//Player creation
+let player1 = Player('Player1 (X)', 'X')
+let player2 = AI('PlayerAI (O)', 'O')
 
 // Game board module
 const gameBoard = (function() {
@@ -62,8 +89,10 @@ const gameController = (function() {
     let activePlayer = player1
     let stepCounter = 0
     const inputHandler = function(cell) {
-        if (cell.target.innerHTML !== '') return
-        gameBoard.addSymbol(cell.target.getAttribute('data-cellindex'))
+        if (!activePlayer.isAI()) {
+            if (cell.target.innerHTML !== '') return
+            gameBoard.addSymbol(cell.target.getAttribute('data-cellindex'))
+        }
         displayController.drawBoard()
         if (isWin()) {
             activePlayer.increaseScore()
@@ -86,6 +115,18 @@ const gameController = (function() {
         } else {
             activePlayer = player1
         }
+        if (activePlayer.isAI()) {
+            activePlayer.move()
+        }
+    }
+    const changeGameMode = function() {
+        if (gameMode.value === 'PvP') {
+            player2 = Player('Player2 (O)', 'O')
+        } else {
+            player2 = AI('PlayerAI (O)', 'O')
+        }
+        document.querySelector('#player2-header').innerHTML = player2.getName()
+        restart()
     }
     const newRound = function() {
         stepCounter = 0
@@ -131,6 +172,7 @@ const gameController = (function() {
     return {
         inputHandler,
         getActivePlayer,
+        changeGameMode,
         restart
     }
 })()
@@ -143,3 +185,6 @@ cells.forEach(function(cell) {
 
 const restartButton = document.querySelector('#restart')
 restartButton.addEventListener('mousedown', gameController.restart)
+
+const gameMode = document.querySelector('#game-mode')
+gameMode.addEventListener('change', gameController.changeGameMode)  

@@ -3,14 +3,14 @@ const ticTacToe =  (function() {
     // Player factory
     const Player = function(name, symbol) {
         let score = 0
-        const isAI = () => false
+        const type = 'Player'
         const getName = () => name
         const getSymbol = () => symbol
         const getScore = () => score
         const increaseScore = () => {++score}
         const resetScore = () => {score = 0}
         return {
-            isAI,
+            type,
             getName,
             getSymbol,
             getScore,
@@ -21,22 +21,22 @@ const ticTacToe =  (function() {
 
     // AI factory
     const AI = function(name, symbol) {
-        const isAI = () => true
+        const type = 'AI'
         const move = function() {
-        setTimeout(() => {
-                let emptyCells = []
-                gameBoard.get().forEach(function(cell, index) {
-                    if (cell === '') {emptyCells.push(index)}
-                })
-                gameBoard.addSymbol(emptyCells[Math.floor(Math.random() * emptyCells.length)])
-                gameController.inputHandler()
-        }, 300) 
+            setTimeout(() => {
+                    let emptyCells = []
+                    gameBoard.get().forEach(function(cell, index) {
+                        if (cell === '') {emptyCells.push(index)}
+                    })
+                    gameBoard.addSymbol(emptyCells[Math.floor(Math.random() * emptyCells.length)])
+                    gameController.inputHandler()
+            }, 300) 
         }
         return Object.assign(
             {},
             Player(name, symbol),
             {
-                isAI,
+                type,
                 move
             }
         )
@@ -91,7 +91,7 @@ const ticTacToe =  (function() {
         let activePlayer = player1
         let stepCounter = 0
         const inputHandler = function(cell) {
-            if (!activePlayer.isAI()) {
+            if (activePlayer.type === 'Player') {
                 if (cell.target.innerHTML !== '') return
                 gameBoard.addSymbol(cell.target.getAttribute('data-cellindex'))
             }
@@ -117,7 +117,7 @@ const ticTacToe =  (function() {
             } else {
                 activePlayer = player1
             }
-            if (activePlayer.isAI()) {
+            if (activePlayer.type === 'AI') {
                 activePlayer.move()
             }
         }
